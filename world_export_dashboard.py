@@ -39,29 +39,31 @@ with st.sidebar:
         (world_export_data['Year'].between(start_year, end_year))
     ]
 
-map_filtered_data = filtered_data.groupby(["Year","Continent of the territory","English Name","ISO 3 country code"]
+map_filtered_data = filtered_data.groupby(["Year","English Name","ISO 3 country code"]
                                             , as_index=False).agg({
                                             "Export_Amount": "sum"})
 
-
-# Create a map chart for export amount by country
 st.subheader(f"Export Amount by Country ({', '.join(map(str, region_filter))})")
+# Create a map chart for export amount by country
 fig_map = px.choropleth(map_filtered_data, 
                         locations="ISO 3 country code", 
                         color="Export_Amount", 
                         hover_name="English Name",
                         hover_data=["Export_Amount"],
-                        color_continuous_scale="Greens",
+                        color_continuous_scale="Darkmint",
                         projection="natural earth")
-st.plotly_chart(fig_map)
 
+# Update geo settings for better visibility
 fig_map.update_geos(
-    showcountries=True,   # Show country borders
-    showcoastlines=True,  # Show coastlines
-    showland=True,        # Ensure land is visible
+    showcountries=True,
+    showcoastlines=True,
+    showland=True,
     landcolor="whitesmoke",
-    projection_scale=2  # Adjust to fit more area
+    projection_scale=1  # Changed projection type for better rendering
 )
+
+fig_map.update_layout(width=1280, height=800)  # Adjusted size
+st.plotly_chart(fig_map)
 
 
 
